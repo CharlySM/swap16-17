@@ -1,0 +1,127 @@
+\input{preambulo.tex}
+
+%----------------------------------------------------------------------------------------
+%	TÍTULO Y DATOS DEL ALUMNO
+%----------------------------------------------------------------------------------------
+
+\title{
+\normalfont \normalsize
+\textsc{{\bf Servidores web de altas prestaciones (2016-2017)} \\ Grado en Ingeniería Informática \\ Universidad de Granada} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge Práctica 2:  Clonar la información de un sitio web\\ % The assignment title
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Carlos Sánchez Martínez} % Nombre y apellidos
+
+\date{\normalsize\today} % Incluye la fecha actual
+
+%----------------------------------------------------------------------------------------
+% DOCUMENTO
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Muestra el Título
+
+\newpage %inserta un salto de página
+
+\tableofcontents % para generar el índice de contenidos
+
+\listoffigures
+
+\listoftables
+
+\newpage
+
+
+
+
+%----------------------------------------------------------------------------------------
+%	Cuesti´on 1
+%----------------------------------------------------------------------------------------
+
+\section{ Probar el funcionamiento de la copia de archivos por ssh. }
+
+	Para copiar el archivo .tar de la máquina 1 a la máquina dos usaremos el comando tar czf - \textit{directorio} | ssh \textit{dirección máquina 2} 'cat ~/\textit{directorio}.tar'.\\
+  Para ello se ha realizado las siguientes capturas de pantalla.\\
+
+  Primero se mostrará el directorio de la máquina 2 vacío.\\
+
+  \begin{figure}[H]
+		\centering
+		\includegraphics[width=6in]{directorioMaquina2}
+		\caption{Se muestra el directorio de la máquina 2 vacío.}
+		\label{figura 1}
+	\end{figure}
+
+  Se muestra la ejecución del comando antes mencionado para copiar, desde máquina 1, el archivo prueba que se mostrará en la máquina 2 como prueba.tgz.\\
+
+  \begin{figure}[H]
+		\centering
+		\includegraphics[]{copiaDirMaq1aMaq2}
+		\caption{Se muestra la ejecución del comando para la copia del archivo prueba desde máquina 1 hasta máquina 2.}
+		\label{figura 2}
+	\end{figure}
+
+  Se mostrará el archivo copiado en el directorio de la máquina 2.\\
+
+  \begin{figure}[H]
+		\centering
+		\includegraphics[width=6in]{DirEnMaq2}
+		\caption{Se muestra el archivo prueba copiado como prueba.tgz}
+		\label{figura 3}
+	\end{figure}
+
+
+%--------------------------------------------------------------------------------------------------
+%	Cuestion2
+%--------------------------------------------------------------------------------------------------
+
+\section{ Clonado de una carpeta entre las dos máquinas.}
+	Para clonar un archivo desde una máquina a otra lo que se ha hecho ha sido clonar el directorio /var/www de la máquina 1 en la máquina 2. Para ello se ha utilizado la heramienta rsync y se ha utlizado el comando rsync -avz -e ssh \textit{dirección máquina1}:/var/www \textit{directorio destino}.\\
+  El resultado de ejecutar el comando ha sido el siguiente:\\
+
+  \begin{figure}[H]
+		\centering
+		\includegraphics[]{Ejer2}
+		\caption{Se ha clonado el directorio /var/www de la máquina 1 en el directorio /var/www de la máquina 2.}
+		\label{figura 4}
+	\end{figure}
+
+%----------------------------------------------------------------------------------------------
+% Cuestion 3
+%----------------------------------------------------------------------------------------------
+
+\section{ Configuración de ssh para acceder sin que solicite contraseña. }
+  Para acceder desde una máquina remota a otra sin contraseña con ssh se realizarán los siguientes pasos:\\
+  1. Vamos a acceder a la máquina 1 desde la máquina 2 para ello primero ejecutaremos el comando ssh-keygen  -b 4096 -t rsa en la máquina 2.\\
+  2. Ahora se habrá creado un archivo con una llave publica lo añadiremos al archivo ~/.ssh/authorized\_keys y se le añadirán los perimisos 600.\\
+  3. Luego ejecutaremos el comando ssh-copy-id \textit{dirección máquina 1} para hacer la copia de la clave.\\
+  4. Ejecutamos el comando ssh \textit{dirección máquina 1} para poder hacer cambios desde la máquina 2 en la máquina 1.\\
+  Tras la ejecución de estos pasos y ejecutando el último paso ssh \textit{dirección de máquina 1} nos queda el resultado siguiente:\\
+
+  \begin{figure}[H]
+		\centering
+		\includegraphics[]{Ejer3}
+		\caption{Ejecución del comando ssh \textit{dirección máquina 1}. carlos\@ubuntu es el terminal de la máquina 1. (En este caso tiene el mismo nombre de la máquina 2.)}
+		\label{figura 5}
+	\end{figure}
+
+  Para salir de la terminal de máquina 1 se ejecuta el comando exit.\\
+
+%------------------------------------------------------------------------------------------------------
+%	Cuestion 4
+%------------------------------------------------------------------------------------------------------
+\section{ Establecer una tarea en cron que se ejecute cada hora para mantener actualizado el contenido del directorio /var/www entre las dos máquinas. }
+  Para crear una tarea vamos a modificar el archivo crontab y añadir la siguiente linea:\\
+  0 * * * * rsync -avz -e ssh 10.0.2.5:/var/www /var/www  --report  /etc/cron.hourly
+  \begin{figure}[H]
+		\centering
+		\includegraphics[]{crontab}
+		\caption{Fichero /etc/crontab para actualizar /var/www cada hora a las en punto.}
+		\label{figura 6}
+	\end{figure}
+
+
+\end{document}
