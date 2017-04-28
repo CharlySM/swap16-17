@@ -1,0 +1,248 @@
+\input{preambulo.tex}
+
+%----------------------------------------------------------------------------------------
+%	TÍTULO Y DATOS DEL ALUMNO
+%----------------------------------------------------------------------------------------
+
+\title{
+\normalfont \normalsize
+\textsc{{\bf Servidores web de altas prestaciones (2016-2017)} \\ Grado en Ingeniería Informática \\ Universidad de Granada} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge Práctica 3: Balanceo de carga\\ % The assignment title
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Carlos Sánchez Martínez} % Nombre y apellidos
+
+
+%----------------------------------------------------------------------------------------
+% DOCUMENTO
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Muestra el Título
+
+\newpage %inserta un salto de página
+
+\tableofcontents % para generar el índice de contenidos
+
+\listoffigures
+
+\listoftables
+
+\newpage
+
+
+
+
+%----------------------------------------------------------------------------------------
+%	Cuesti´on 1
+%----------------------------------------------------------------------------------------
+\section{Tema 2}
+\subsection{ Calcular la disponibilidad del sistema si tenemos dos réplicas de cada elemento. }
+Web $\rightarrow 0.9775+(1-0.9775)0.85=0.996625$\\
+Application $\rightarrow 0.99+(1-0.99)0.9=0.999$\\
+Database $\rightarrow 0.999999+(1-0.999999)0.999=0.9999999$\\
+DNS $\rightarrow 0.996+(1-0.996)0.98=0.99992$\\
+Firewall $\rightarrow 0.9775+(1-0.9775)0.85=0.996625$\\
+Switch $\rightarrow 0.9999+(1-0.9999)0.99=0.999999$\\
+Datacenter $\rightarrow 0.9999+(1-0.9999)0.9999=0.99999999$\\
+ISP $\rightarrow 0.9975+(1-0.9775)0.95=0.999875$\\
+$0.996625 * 0.999 * 0.9999999 * 0.99992 *  0.996625 * 0.999999 * 0.99999999 * 0.9998750 = 0,99206362299882951312694061748356$\\
+\subsection{ Buscar frameworks y librerías para diferentes lenguajes que permitan hacer aplicaciones altamente disponibles con relativa facilidad. }
+
+Microsoft Operations Framework por sus siglas es MOF el objetivo es conseguir alta disponibilidad en productos y tecnología microsoft.\\
+IBM High Availability Cluster Multiprocessing esta orientado a correr en clustes con SO AIX Unix e IBM system (Sistemas operativos creados por IBM) y conseguir un cluster de multiprocesamiento de alta calidad.\\
+Linux-HA es un framework para clusters de alta disponibilidad que usen linux.\\
+
+\subsection{ ¿Cómo analizar el nivel de carga de cada uno de los subsistemas en el servidor?  }
+
+En Linux podemos usar el comando top que nos muestra, entre otras cosas, el uso de CPU y de memoria que están haciendo los procesos se están ejecutando en nuestra máquina. De una forma algo más sofisticada htop permite obtener una información similar. De modo que con estos dos programas por ejemplo podemos ver el porcentaje de CPU consumido.\\
+
+Gnome-system-monitor es otra herramienta que, con un entorno gráfico, nos permite consultar información sobre algunos parámetros de carga de nuestra máquina.\\
+
+En Windows tenemos la herramienta Performance Monitor para obtener esta información con un entorno gráfico, además podemos extraer datos de ella de forma automática.\\
+
+Muning\\
+Nagios\\
+Zabbix\\
+
+\subsection{ Buscar ejemplos de balanceadores software y hardware(productos comerciales).\\
+Buscar productos comerciales para servidores de aplicaciones.
+Buscar productos comerciales para servidores de almacenamiento.   
+ }
+\textbf{Buscar ejemplos de balanceadores software y hardware (productos comerciales).}
+Entre los balanceadores de carga software más conocidos están HAProxy y Nginx. También están Linux Virtual Servers, Pound o Pen. Ejemplos de balanceadores de carga hardware:\\
+Serie BIG-IP de f5.\\
+Cisco tiene una gran gama de balanceadores. Sus routers también incluyen esta función.\\
+AppDirector OnDemand de la compañía Radware.\\
+Load Balancer ADC de Barracuda.\\
+\textbf{ Buscar productos comerciales para servidores de aplicaciones. }
+Servidores de aplicaciones Java EE:\\
+WebLogic de Oracle.\\
+WebSphere de IBM.\\
+JBoss AS de JBoss (RedHat).\\
+Geronimo y TomEE de Apache.\\
+
+Otros servidores de aplicación:\\
+Internet Information Server, de Microsoft, para .NET.\\
+Base4 Server.\\
+Zope.\\
+\textbf{ Buscar productos comerciales para servidores de almacenamiento. }
+Hay infinidad de servidores de almacenamiento, en especial con la proliferación de servicios y almacenamiento en la nube. Por ejemplo:\\
+Dell Compellent FS8600\\
+HP ConvergedSystem 200-HC StoreVirtual System\\
+IBM EXP2500 Storage Enclosure\\
+
+\section{ Tema 3 }
+\subsection{ Buscar con qué órdenes de terminal o herramientas gráficas podemos configurar bajo Windows y bajo Linux el enrutamiento del tráfico de un servidor para pasar el tráfico desde una subred a otra. }
+En Windows Server 2008 y 2012 se incluye un "Servicio de enrutamiento y acceso remoto" que se puede agregar al servidor mediante un simple asistente.\\
+En Linux, la configuración de red está en /etc/network/interfaces, archivo donde podemos establecer las configuraciones de red. Para crear una ruta, podemos utilizar el comando route y añadirla o borrarla con add o del respectivamente. Si lo que queremos es mantener estas rutas tras reiniciar el servidor, añadimos la ruta al archivo /etc/network/interfaces mediante la línea up route add -net ... .\\
+
+\subsection{ Buscar con qué órdenes de terminal o herramientas gráficas podemos configurar bajo Windows y bajo Linux el filtrado y bloqueo de paquetes.  }
+
+La principal orden en Linux es iptables, que nos permite incluir múltiples reglas para dejar pasar o bloquear paquetes, siendo una herramienta ampliamente conocida.\\
+En Windows, se puede agregar un filtrado de paquetes mediante la herramienta de Enrutamiento y acceso remoto.\\
+
+\section{ Tema 4 }
+\subsection{ Buscar información sobre cuánto costaría en la actualidad un mainframe. Comparar precio y potencia entre esa máquina y una granja web de unas prestaciones similares. }
+
+El último mainframe lanzado por IBM es el z13, orientado al manejo de datos y compras realizadas con el móvil. Como es habitual no se conoce el precio del mainframe, pero se estima que supere los 100.000\$. El desembolso inicial sería mayor que el necesario para una granja web, aunque el gasto en electricidad y el espacio ocupado será menor. Por contra, es más difícilmente escalable y un fallo en la máquina nos dejaría sin poder servir a los clientes.\\
+
+\subsection{ Buscar información sobre precio y características de balanceadores hardware específicos. Compara las prestaciones que ofrecen unos y otros. }
+
+Compararemos los modelos KEMP LM-5400 (17990\$), F5 Networks LTM-2000s (17995\$) y Citrix MPX-8005 (25000\$).\\
+Max Throughput (GBs): 10.02 5 5 Número de fuentes de alimentación: 2 1 1
+Consumo (W): 184.5 74 185
+
+\subsection{ Buscar información sobre los métodos de balanceo que implementan los dispositivos recogidos en el ejercicio 4.2  }
+El modelo de KEMP LM-5400 implementa los algoritmos de Round Robin, Round Robin con pesos, el menor número de conexiones, menor número de conexiones con pesos, reparto mediante un sistema agente que estudia la carga del servidor, source o ip-hash (una petición de una máquina anteriormente servida va al mismo servidor), switching según el contenido de la capa 6 y usar un servidor por defecto y usar otro cuando haya mucha demanda.
+
+\subsection{ Instala y configura en una máquina virtual el balanceador zenloadbalancer. }
+Para instalar el balanceadro zenloadbalancer primero bajaremos la imagen iso desde el enlace https://sourceforge.net/projects/zenloadbalancer/?source=typ\_redirect \\
+Después creamos una máquina virtual donde se instale la imagen iso descargada antes.\\
+Cuando comienza la instalación aparecerá en pantalla algo como lo siguiente:
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth]{zenload1}
+		\caption{Inicio instalación Zenloadbalancer.}
+		\label{figura 1}
+\end{figure}
+Escogemos la opción install.\\
+Después apaecerá las opciones de configuración del lenguaje y la configuración del teclado.\\
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth]{zenload2}
+		\caption{Inicio configuración Zenloadbalancer.}
+		\label{figura 2}
+\end{figure}
+
+Después nos pedirá la dirección IP de nuestro ordenador 
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth]{zenload3}
+		\caption{Inicio configuración Zenloadbalancer.}
+		\label{figura 3}
+\end{figure}
+
+Luego nos pide la máscara de red  como se muestra a continuación.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth]{zenload4}
+		\caption{Inicio configuración Zenloadbalancer.}
+		\label{figura 4}
+\end{figure}
+
+Luego pedirá la dirección de pasarela.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth]{zenload5}
+		\caption{Inicio configuración Zenloadbalancer.}
+		\label{figura 5}
+\end{figure}
+
+Luego pide las direcciones ip de dominio y se termina de configurar la máquina con las mismas opciones que si estuvieramos configurando una máquina linux. Al acabar la configuración se mustra la pantalla de acceso al usuario como se muestra.\\
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth]{zenload6}
+		\caption{Inicio configuración Zenloadbalancer.}
+		\label{figura 6}
+\end{figure}
+
+Muestra de la pantalla de sesión iniciada del usuario.\\
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.7\textwidth]{zenload7}
+		\caption{Inicio configuración Zenloadbalancer.}
+		\label{figura 7}
+\end{figure}
+
+\subsection{ Probar las diferentes maneras de redirección HTTP. ¿Cuál es adecuada y cuál no lo es para hacer balanceo de carga global? ¿Por qué?  }
+
+Existen dos tipos de redireccionamiento: Redireccionamiento 301 y redireccionamiento 302.\\
+
+Redireccionamiento 301: Se define a este redireccionamiento como "permanente", se le llama así por que el contenido de la url antigua se pasa a una url nueva de forma permanente.\\
+Redireccionamiento 302: Se define a este redireccionamiento como "temporal", se le llama así por que el contenido de la url antigua se pasa a una url nueva de forma temporal.\\
+
+La adecuada sería la 302, porque se puede redirigir el tráfico a distintas direcciones temporales y no solo a una permanente.\\
+
+\subsection{ Buscar información sobre los bloques de IP para los distintos países o continentes. Implementar en JavaScript o PHP la detección de la zona desde donde se conecta un usuario }
+
+Las direcciones ip no se guardan de forma aleatoria se guardan en registros ordenados en bloques, cada registro es diferente para cada país, los registros se almacenan en base de datos que se actualizan regularmente.\\
+Para mostrar la zona desde donde se conecta un ususario vamos a poner un script que junto a una base de datos puede decir a que país pertenece una dirección ip, el script esta sacado de http://chir.ag/projects/geoiploc/ \\
+
+<?php\\
+
+  include("geoiploc.php"); // Must include this\\
+
+  // ip must be of the form "192.168.1.100"\\
+  // you may load this from a database\\
+  $ip = \$\_SERVER["REMOTE\_ADDR"];\\
+  echo "Your IP Address is: " . $ip . "<br />";\\
+
+  echo "Your Country is: ";\\
+  // returns country code by default\\
+  echo getCountryFromIP(\$ip);\\
+  echo "<br /> \textbackslash n";\\
+
+  // optionally, you can specify the return type\\
+  // type can be ''code" (default), ''abbr", "name"\\
+
+  echo "Your Country Code is: ";\\
+  echo getCountryFromIP(\$ip, ''code");\\
+  echo "<br />\textbackslash n";\\
+
+  // print country abbreviation - case insensitive\\
+  echo "Your Country Abbreviation is: ";\\
+  echo getCountryFromIP(\$ip, ''AbBr");\\
+  echo "<br />\textbackslash n";\\
+
+  // full name of country - spaces are trimmed\\
+  echo "Your Country Name is: ";\\
+  echo getCountryFromIP(\$ip, " NamE ");\\
+  echo "<br />\textbackslash n";\\
+
+?>\\
+
+\subsection{ Buscar información sobre métodos y herramientas para implementar GSLB. }
+
+Se trata de utilizar varias técnicas para distribuir la carga entre varios centros de datos para evitar retrasos entre los usuarios y el servidor y prevenir fallos, si falla un centro de datos se redirige a otro el tráfico.
+
+Hay varias maneras de implenetarlo:
+Uso del sistema de DNS\\
+Redirección HTTP\\
+GSLB basado en DNS\\
+GSLB usando protocolos de enrutamiento.\\
+
+%--------------------------------------------------------------------------------------------------
+%	Cuestion2
+%--------------------------------------------------------------------------------------------------
+
+
+\end{document}
