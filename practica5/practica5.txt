@@ -1,0 +1,86 @@
+PRÁCTICA 5: REPLICACIÓN DE BASE DE DATOS MYSQL.
+
+		Nombre: Carlos Sánchez Martínez.
+
+
+
+Crear una base de datos con al menos una tabla y algunos datos.
+
+create database contactos;
+use contactos;
+create table datos(nombre varchar(100), tlf int);
+insert into datos(nombre,tlf) values(“carlos”, 624123456);
+insert into datos(nombre,tlf) values(“Jorge”, 634323457);
+
+      2.   Realizar la copia de seguridad de la BD completa usando mysqldump.
+	Maestro:
+	mysql -u root –p
+mysql> FLUSH TABLES WITH READ LOCK;
+mysql> quit
+mysqldump contactos -u root -p > /tmp/contactos.sql
+	mysql -u root –p
+mysql> UNLOCK TABLES;
+mysql> quit
+Esclavo:
+	scp DireccionMaquina1:/tmp/contactos.sql  /tmp/contactoscopia.sql
+
+3. Restaurar dicha copia en la segunda máquina (clonado manual de la BD).
+	Esclavo:
+	mysql -u root –p
+mysql> CREATE DATABASE ‘contactoscopia’;
+mysql> quit
+mysql -u root -p contactoscopia < /tmp/contactoscopia.sql
+
+4. Realizar la configuración maestro-esclavo de los servidores MySQL para que la replicación de datos se realice automáticamente.
+	Maestro:
+	sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+	modificar:
+	bind-address 127.0.0.1 a
+	#bind-address 127.0.0.1
+
+	modificar:
+
+	#log_bin = /var/log/mysql/bin.log a
+	log_bin = /var/log/mysql/bin.log
+
+	sudo /etc/init.d/mysql restart
+
+	Esclavo:
+	sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+	modificar:
+	bind-address 127.0.0.1 a
+	#bind-address 127.0.0.1
+
+	modificar a esto el parámetro server-id:
+	server-id=2
+
+	modificar:
+
+	#log_bin = /var/log/mysql/bin.log a
+	log_bin = /var/log/mysql/bin.log
+
+	sudo /etc/init.d/mysql restart
+
+	Maestro:
+
+	mysql> CREATE USER vamos IDENTIFIED BY 'vamos';
+ mysql> GRANT REPLICATION SLAVE ON *.* TO 'vamos'@'%' IDENTIFIED BY 'vamos';
+mysql> FLUSH PRIVILEGES;
+ mysql> FLUSH TABLES;
+mysql> FLUSH TABLES WITH READ LOCK;
+mysql> SHOW MASTER STATUS;
+
+Esclavo:
+
+mysql> CHANGE MASTER TO MASTER_HOST='DireccionMaquina1', MASTER_USER='vamos', MASTER_PASSWORD=’vamos', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=4016;
+mysql> START SLAVE;
+
+Maestro:
+mysql> UNLOCK TABLES;
+
+Esclavo:
+
+mysql> SHOW SLAVE STATUS\G ;
+
+Si el parámetro behind_seconds_behind_master:0 entonces está conectado con el maestro
+sino tendrá valor null y habrá un fallo.
