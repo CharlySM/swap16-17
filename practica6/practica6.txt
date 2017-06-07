@@ -1,0 +1,35 @@
+PRÁCTICA 6: DISCOS EN RAID
+
+		NOMBRE: Carlos Sánchez Martínez
+
+realizar la configuración de dos discos en RAID 1 bajo Ubuntu, automatizando el montaje del dispositivo creado al inicio del sistema.
+
+	Para crear los dos discos de RAID primero añadiremos dos discos virtuales a la máquina donde se creará el dispositivo RAID. Para hacerlo en virtualbox, accederemos a la opción de configuración de la máquina con la máquina apagada. Seleccionaremos la opción de Almacenamiento. En las opciones que aparecen crearemos los dos discos virtuales en Controlador SATA.
+
+	Para crear el dispositivo RAID utilizaremos el comando:
+		sudo mdadm -C /dev/md0 --level=raid1 --raid-devices=2 /dev/sdb /dev/sdc
+donde /dev/sdb será la dirección del disco virtual 1 y /dev/sdc será la del disco virtual 2.
+Después daremos formato al dispositivo RAID en /dev/md0. Para esto utilizaremos el comando:
+	sudo mkfs /dev/md0
+Luego lo montamos en el directorio /dat con el comando:
+	sudo mount /dev/md0 /dat
+Para hacer que el dispositivo se monte cuando arrancamos el sistema tenemos que modificar el archivo /etc/fstab añadiendo la línea:
+	UUID=13f8bc79-9e96-4cf3-a7a8-9daf139a1b38 /dat ext2 defaults 0 0
+Para averiguar el UUID del dispositivo utilizaremos el comando:
+	ls -l /dev/disk/by-uuid/
+
+
+2. Simular un fallo en uno de los discos del RAID (mediante comandos con el mdadm), retirarlo “en caliente”, comprobar que se puede acceder a la información que hay almacenada en el RAID, y por último, añadirlo al conjunto y comprobar que se reconstruye correctamente.
+
+Para simular un fallo en el dispositivo RAID utilizaremos el comando:
+	sudo mdadm --manage --set-faulty /dev/md0 /dev/sdb
+Y vemos el fallo con el comando:
+	sudo mdadm --detail /dev/md0
+Para retirarlo hacemos:
+	sudo mdadm --manage --remove /dev/md0 /dev/sdb
+Y comprobamos que el dispositivo se ha retirado con:
+	sudo mdadm --detail /dev/md0
+Para añadirlo utilizaremos el comando:
+	sudo mdadm --manage --add /dev/md0 /dev/sdb
+Y comprobamos que se ha añadido con:
+	sudo mdadm --detail /dev/md0
